@@ -20,5 +20,5 @@ LINKER_FLAGS="-lwayland-client -lwayland-egl -lEGL -lGL"
 gcc minimal-egl.c -DUSE_DECORATIONS=1 -o minimal-egl-decorations $LINKER_FLAGS
 gcc minimal-egl.c -DUSE_DECORATIONS=0 -o minimal-egl-no-decorations $LINKER_FLAGS
 
-gcc fixed-minimal-egl.c -DUSE_DECORATIONS=1 -o fixed-minimal-egl-decorations $LINKER_FLAGS
-gcc fixed-minimal-egl.c -DUSE_DECORATIONS=0 -o fixed-minimal-egl-no-decorations $LINKER_FLAGS
+gcc working-kde-minimal-egl.c -DUSE_DECORATIONS=1 -o working-kde-minimal-egl-decorations $LINKER_FLAGS
+gcc working-kde-minimal-egl.c -DUSE_DECORATIONS=0 -o working-kde-minimal-egl-no-decorations $LINKER_FLAGS
