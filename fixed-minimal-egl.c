@@ -168,6 +168,7 @@ int main(int ArgumentCount, char **Arguments)
     }
     
     xdg_surface_ack_configure(WaylandState.XDGSurface, WaylandState.ConfigureSerial);
+    WaylandState.ConfigureSerial = 0;
 
     if(WaylandState.ShouldUpdateGeometry)
     {
