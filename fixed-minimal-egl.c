@@ -84,7 +84,28 @@ void HandleXDGToplevelConfigure(void *Data, struct xdg_toplevel *XDGToplevel,
 {
     wayland_state *Wayland = Data;
     
-    if(RequestedWidth && RequestedHeight)
+    bool UserResizing = false;
+
+    for(uint32_t *State = WindowStates->data;
+        State < (uint32_t *)(WindowStates->data + WindowStates->size);
+        ++State)
+    {
+        switch(*State)
+        {
+            case XDG_TOPLEVEL_STATE_FULLSCREEN:
+            case XDG_TOPLEVEL_STATE_MAXIMIZED:
+            case XDG_TOPLEVEL_STATE_RESIZING:
+            case XDG_TOPLEVEL_STATE_TILED_TOP:
+            case XDG_TOPLEVEL_STATE_TILED_BOTTOM:
+            case XDG_TOPLEVEL_STATE_TILED_LEFT:
+            case XDG_TOPLEVEL_STATE_TILED_RIGHT:
+            {
+                UserResizing = true;
+            } break;
+        }
+    }
+
+    if(UserResizing && RequestedWidth && RequestedHeight)
     {
         Wayland->BufferWidth = RequestedWidth;
         Wayland->BufferHeight = RequestedHeight;
