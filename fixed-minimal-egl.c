@@ -22,6 +22,7 @@ typedef struct wayland_state
     
     bool ShouldUpdateGeometry;
     bool WaitForConfigure;
+    uint32_t ConfigureSerial;
     
     struct wl_display *Display;
     struct wl_registry *Registry;
@@ -101,8 +102,8 @@ void HandleXDGSurfaceConfigure(void *Data, struct xdg_surface *XDGSurface, uint3
 {
     wayland_state *Wayland = Data;
     
-    xdg_surface_ack_configure(XDGSurface, Serial);
     Wayland->WaitForConfigure = false;
+    Wayland->ConfigureSerial = Serial;
 }
 
 void HandleXDGToplevelDecorationConfigure(void *Data, struct zxdg_toplevel_decoration_v1 *XDGToplevelDecoration, uint32_t Mode)
@@ -166,6 +167,8 @@ int main(int ArgumentCount, char **Arguments)
         NumEvents = wl_display_dispatch(WaylandState.Display);
     }
     
+    xdg_surface_ack_configure(WaylandState.XDGSurface, WaylandState.ConfigureSerial);
+
     if(WaylandState.ShouldUpdateGeometry)
     {
         UpdateGeometry(&WaylandState);
@@ -244,6 +247,13 @@ int main(int ArgumentCount, char **Arguments)
         if(WaylandState.ShouldUpdateGeometry)
         {
             UpdateGeometry(&WaylandState);
+        }
+
+        if(WaylandState.ConfigureSerial)
+        {
+            xdg_surface_ack_configure(WaylandState.XDGSurface, WaylandState.ConfigureSerial);
+            wl_surface_commit(WaylandState.Surface);
+            WaylandState.ConfigureSerial = 0;
         }
         
         glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
